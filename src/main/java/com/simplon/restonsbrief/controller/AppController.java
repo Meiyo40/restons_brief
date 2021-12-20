@@ -10,7 +10,7 @@ import javax.servlet.http.HttpServletRequest;
 public class AppController {
 
     @GetMapping(value = {"/index", "/"})
-    public String getIndex(Model model, HttpServletRequest request) {
+    public String getIndex() {
         return "index";
     }
 }

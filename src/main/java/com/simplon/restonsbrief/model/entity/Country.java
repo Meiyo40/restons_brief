@@ -28,6 +28,9 @@ public class Country {
     public Long getId() {
         return id;
     }
+    public void setId(Long pId) {
+        this.id = pId;
+    }
 
     public String getName() {
         return name;

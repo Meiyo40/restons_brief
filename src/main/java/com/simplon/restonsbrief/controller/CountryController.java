@@ -29,26 +29,35 @@ public class CountryController {
         return new ResponseEntity<>(this.service.getCountry(id), HttpStatus.OK);
     }
 
-    @GetMapping("/country/{countryCode}")
+    @GetMapping("/country/code/{countryCode}")
     public ResponseEntity<Country> getCountry(@PathVariable String countryCode) {
         return new ResponseEntity<>(this.service.getCountry(countryCode), HttpStatus.OK);
     }
 
-    @GetMapping("/name/{countryName}")
+    @GetMapping("/country/name/{countryName}")
     public ResponseEntity<Country> getCountryByName(@PathVariable String countryName) {
-        return new ResponseEntity<>(this.service.getCountry(countryName), HttpStatus.OK);
+        return new ResponseEntity<>(this.service.getCountryByName(countryName), HttpStatus.OK);
     }
 
     @PutMapping("/country/{id}")
     public ResponseEntity<Country> updateCountry(@PathVariable Long id, @RequestBody Country pCountry) {
         Country country = this.service.getCountry(id);
-        country.setName(pCountry.getName());
-        country.setCode(pCountry.getCode());
+        if(pCountry.getName() != null) {
+            country.setName(pCountry.getName());
+        }
+        if(pCountry.getCode() != null) {
+            country.setCode(pCountry.getCode());
+        }
         return new ResponseEntity<>(this.service.setCountry(country), HttpStatus.OK);
     }
 
     @PostMapping("/country")
     public ResponseEntity<Country> createCountry(@RequestBody Country country) {
+
+        if(country.getId() != null) {
+            country.setId(null);
+        }
+
         return new ResponseEntity<>(this.service.setCountry(country), HttpStatus.CREATED);
     }
 

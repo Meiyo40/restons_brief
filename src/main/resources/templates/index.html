@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="fr">
+<html lang="fr" xmlns:th="http://www.springframework.org/schema/mvc">
 
 <head>
     <meta charset="utf-8" />
@@ -10,12 +10,39 @@
     <title>RESTons API</title>
 
     <!-- Place your stylesheet here-->
+    <link href="style.css" rel="stylesheet" type="text/css" />
 
 </head>
 
 <body>
+<div id="container">
+    <h1>RESTons API</h1>
 
-<h1>RESTons API</h1>
+    <div class="center">
+        <button id="createButton">Create Country</button>
+        <button id="updateButton">Update Country</button>
+        <button id="deleteButton">Delete Country</button>
+    </div>
+
+    <div class="center" id="countryForm">
+        <div id="DataForm">
+            <span id="actionTitle"></span>
+            <label for="name">Enter country name</label>
+            <input type="text" required id="name" name="name" placeholder="Country name">
+            <label for="code">Enter Country Code</label>
+            <input type="text" id="code" required name="code" placeholder="Country Code">
+            <input type="submit" value="Set your country">
+        </div>
+    </div>
+
+    <div id="deleteForm">
+        <h4>Delete</h4>
+        <input type="text" id="deleteInput" placeholder="ID to delete">
+        <input type="submit" id="deleteSubmit" value="Delete">
+    </div>
+</div>
+
+<script src="script.js"></script>
 </body>
 
 </html>

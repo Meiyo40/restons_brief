@@ -1,0 +1,21 @@
+#container,
+#DataForm,
+#deleteForm{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items:center;
+}
+
+#DataForm,
+#deleteForm{
+    display: none
+}
+
+#DataForm{
+    margin: 1rem;
+}
+
+input, label {
+    margin: 10px;
+}
