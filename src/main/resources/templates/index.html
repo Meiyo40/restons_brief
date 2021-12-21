@@ -20,8 +20,7 @@
 
     <div class="center">
         <button id="createButton">Create Country</button>
-        <button id="updateButton">Update Country</button>
-        <button id="deleteButton">Delete Country</button>
+        <button id="listButton">List Countries</button>
     </div>
 
     <div class="center" id="countryForm">
@@ -40,8 +39,28 @@
         <input type="text" id="deleteInput" placeholder="ID to delete">
         <input type="submit" id="deleteSubmit" value="Delete">
     </div>
+
+    <table id="countriesList">
+        <thead>
+            <tr>
+                <th>
+                    Liste des pays
+                </th>
+            </tr>
+            <tr>
+                <td>Id</td>
+                <td>Nom</td>
+                <td>Code</td>
+                <td>Action</td>
+            </tr>
+        </thead>
+        <tbody id="listBody">
+
+        </tbody>
+    </table>
 </div>
 
+<script src="https://code.jquery.com/jquery-3.6.0.min.js" integrity="sha256-/xUj+3OJU5yExlq6GSYGSHk7tPXikynS7ogEvDej/m4=" crossorigin="anonymous"></script>
 <script src="script.js"></script>
 </body>
 
