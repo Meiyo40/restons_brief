@@ -1,5 +1,6 @@
 $(document).ready( function() {
     let createBtn = document.getElementById("createButton");
+    let createSubmit = document.getElementById("createSubmit");
     let listBtn = document.getElementById("listButton");
     let formData = document.getElementById("DataForm");
     let deleteForm = document.getElementById("deleteForm");
@@ -7,16 +8,38 @@ $(document).ready( function() {
 
     createBtn.addEventListener("click", (e) => {
         if(formData.style.display === "block") {
-            formData.style.display = "";
+            formData.style.display = "none";
         } else {
-            deleteForm.style.display = "";
+            deleteForm.style.display = "none";
             formData.style.display = "block";
         }
     });
 
+    createSubmit.addEventListener("click", (e) =>{
+        e.preventDefault();
+
+        let data = {
+            name: document.getElementById("name").value,
+            code: document.getElementById("code").value
+        };
+
+        $.ajax({
+            url: "/country",
+            method: "POST",
+            contentType: 'application/json; charset=utf-8',
+            data: JSON.stringify(data),
+            success: (data) => {
+                setDataTable();
+            },
+            error: () => {
+                console.log("Error while created new country");
+            }
+        })
+    });
+
     listBtn.addEventListener("click", (e) => {
         if(countriesList.style.display === "block") {
-            countriesList.style.display = "";
+            countriesList.style.display = "none";
         } else {
             countriesList.style.display = "block";
            setDataTable();
@@ -102,6 +125,30 @@ $(document).ready( function() {
             let nName = document.getElementById("input-name-"+countryId);
             let nCode = document.getElementById("input-code-"+countryId);
             console.log("Update: " + nName.value + " : " + nCode.value);
+
+            let data = {
+              name: nName.value,
+              code: nCode.value
+            };
+
+            $.ajax({
+                url: "/country/" + countryId,
+                method: "PUT",
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(data),
+                dataType: "json",
+                success: (data) => {
+                    document.getElementById("confirm-"+countryId).remove();
+                    nName.remove();
+                    nCode.remove();
+                    name.innerText = data.name;
+                    code.innerText = data.code;
+                },
+                error: () => {
+                    console.log("Error while updating: " + countryId);
+                }
+            });
+
         });
         document.getElementById("action-"+countryId).appendChild(confirm);
     }
