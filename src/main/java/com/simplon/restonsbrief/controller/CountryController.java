@@ -53,12 +53,7 @@ public class CountryController {
 
     @PostMapping("/country")
     public ResponseEntity<Country> createCountry(@RequestBody Country country) {
-
-        if(country.getId() != null) {
-            country.setId(null);
-        }
-
-        return new ResponseEntity<>(this.service.setCountry(country), HttpStatus.CREATED);
+        return new ResponseEntity<>(this.service.createCountry(country), HttpStatus.CREATED);
     }
 
     @DeleteMapping("/country/{id}")

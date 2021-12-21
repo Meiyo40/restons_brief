@@ -20,21 +20,29 @@ $(document).ready( function() {
 
         let data = {
             name: document.getElementById("name").value,
-            code: document.getElementById("code").value
+            code: document.getElementById("code").value.toUpperCase()
         };
 
-        $.ajax({
-            url: "/country",
-            method: "POST",
-            contentType: 'application/json; charset=utf-8',
-            data: JSON.stringify(data),
-            success: (data) => {
-                setDataTable();
-            },
-            error: () => {
-                console.log("Error while created new country");
-            }
-        })
+        if(data.code.length !== 2) {
+            alert("Le code pays ne correspond pas au format attendu (2 caractères).")
+        } else {
+            $.ajax({
+                url: "/country",
+                method: "POST",
+                contentType: 'application/json; charset=utf-8',
+                data: JSON.stringify(data),
+                success: (data) => {
+                    if(data.name !== "ERROR") {
+                        setDataTable();
+                    } else {
+                        alert("Erreur: " + data.code);
+                    }
+                },
+                error: () => {
+                    console.log("Error while created new country");
+                }
+            })
+        }
     });
 
     listBtn.addEventListener("click", (e) => {
@@ -51,50 +59,54 @@ $(document).ready( function() {
             url: "/countries",
             type: "GET",
             success: (data) => {
-                console.log(data);
+                if(data.name !== "ERROR") {
+                    console.log(data);
 
-                let bodyList = document.getElementById("listBody");
-                bodyList.innerHTML = "";
+                    let bodyList = document.getElementById("listBody");
+                    bodyList.innerHTML = "";
 
-                data.forEach( el => {
-                    let row = document.createElement("tr");
-                    let id = document.createElement("td");
-                    let name = document.createElement("td");
-                    let code = document.createElement("td");
-                    let action = document.createElement("td");
+                    data.forEach( el => {
+                        let row = document.createElement("tr");
+                        let id = document.createElement("td");
+                        let name = document.createElement("td");
+                        let code = document.createElement("td");
+                        let action = document.createElement("td");
 
-                    id.innerText = el.id;
-                    name.innerText = el.name;
-                    name.id = "name-" + el.id;
-                    code.innerText = el.code;
-                    code.id = "code-" + el.id;
+                        id.innerText = el.id;
+                        name.innerText = el.name;
+                        name.id = "name-" + el.id;
+                        code.innerText = el.code;
+                        code.id = "code-" + el.id;
 
-                    let del = document.createElement("button");
-                    let update = document.createElement("button");
+                        let del = document.createElement("button");
+                        let update = document.createElement("button");
 
-                    del.id = "del-" + el.id;
-                    del.innerText = "Supprimer";
-                    del.addEventListener("click", (e) => {
-                        deleteCountry(el.id);
+                        del.id = "del-" + el.id;
+                        del.innerText = "Supprimer";
+                        del.addEventListener("click", (e) => {
+                            deleteCountry(el.id);
+                        });
+                        update.id = "upt-" + el.id;
+                        update.innerText = "MàJ";
+                        update.addEventListener("click", (e) => {
+                            updateCountry(el.id);
+                        });
+
+                        action.id = "action-" + el.id;
+                        action.appendChild(del);
+                        action.appendChild(update);
+
+                        row.id = "row-" + el.id;
+
+                        row.appendChild(id);
+                        row.appendChild(name);
+                        row.appendChild(code);
+                        row.appendChild(action);
+                        bodyList.appendChild(row);
                     });
-                    update.id = "upt-" + el.id;
-                    update.innerText = "MàJ";
-                    update.addEventListener("click", (e) => {
-                        updateCountry(el.id);
-                    });
-
-                    action.id = "action-" + el.id;
-                    action.appendChild(del);
-                    action.appendChild(update);
-
-                    row.id = "row-" + el.id;
-
-                    row.appendChild(id);
-                    row.appendChild(name);
-                    row.appendChild(code);
-                    row.appendChild(action);
-                    bodyList.appendChild(row);
-                });
+                } else {
+                    alert("Erreur: " + data.code);
+                }
             },
             error: () => {
                 console.log("Fetch List Error");
@@ -128,27 +140,34 @@ $(document).ready( function() {
 
             let data = {
               name: nName.value,
-              code: nCode.value
+              code: nCode.value.toUpperCase()
             };
 
-            $.ajax({
-                url: "/country/" + countryId,
-                method: "PUT",
-                contentType: 'application/json; charset=utf-8',
-                data: JSON.stringify(data),
-                dataType: "json",
-                success: (data) => {
-                    document.getElementById("confirm-"+countryId).remove();
-                    nName.remove();
-                    nCode.remove();
-                    name.innerText = data.name;
-                    code.innerText = data.code;
-                },
-                error: () => {
-                    console.log("Error while updating: " + countryId);
-                }
-            });
-
+            if(data.code.length !== 2) {
+                alert("Le code pays ne correspond pas au format attendu (2 caractères).")
+            } else {
+                $.ajax({
+                    url: "/country/" + countryId,
+                    method: "PUT",
+                    contentType: 'application/json; charset=utf-8',
+                    data: JSON.stringify(data),
+                    dataType: "json",
+                    success: (data) => {
+                        if(data.name !== "ERROR") {
+                            document.getElementById("confirm-" + countryId).remove();
+                            nName.remove();
+                            nCode.remove();
+                            name.innerText = data.name;
+                            code.innerText = data.code;
+                        } else {
+                            alert("Erreur: " + data.code);
+                        }
+                    },
+                    error: () => {
+                        console.log("Error while updating: " + countryId);
+                    }
+                });
+            }
         });
         document.getElementById("action-"+countryId).appendChild(confirm);
     }
@@ -159,9 +178,13 @@ $(document).ready( function() {
            url: "/country/" + countryId,
             method: "DELETE",
             success: (data) => {
-                let el = document.getElementById("row-" + countryId);
-                el.remove();
-                console.log("Country successfully deleted: " + countryId);
+                if(data.name !== "ERROR") {
+                    let el = document.getElementById("row-" + countryId);
+                    el.remove();
+                    console.log("Country successfully deleted: " + countryId);
+                } else {
+                    alert("Erreur: " + data.code);
+                }
             },
             error: () => {
                console.log("Delete Error(" + countryId + ")");
