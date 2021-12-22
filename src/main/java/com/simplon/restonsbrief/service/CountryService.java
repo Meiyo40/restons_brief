@@ -3,6 +3,8 @@ package com.simplon.restonsbrief.service;
 import com.simplon.restonsbrief.model.entity.Country;
 import com.simplon.restonsbrief.model.repository.CountryRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -17,29 +19,62 @@ public class CountryService {
         this.repository = pRepository;
     }
 
-    public Country getCountry(String pCode) {
+    public ResponseEntity<Country> getCountry(String pCode) {
         Optional<Country> country = this.repository.findByCode(pCode);
-        return country.isPresent() ? country.get() : this.badErrorHandling("Aucun pays avec ce code n'a été trouvé.");
+        Country entity = null;
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        if(country.isPresent()) {
+            entity = country.get();
+            status = HttpStatus.OK;
+        } else {
+            entity = this.badErrorHandling("Aucun pays avec ce code n'a été trouvé.");
+        }
+        return new ResponseEntity<>(entity, status);
     }
 
-    public Country getCountry(Long id) {
+    public ResponseEntity<Country> getCountry(Long id) {
         Optional<Country> country = this.repository.findById(id);
-        return country.isPresent() ? country.get() : this.badErrorHandling("Aucun pays avec cette ID n'a été trouvé.");
+        Country entity = null;
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        if(country.isPresent()) {
+            entity = country.get();
+            status = HttpStatus.OK;
+        } else {
+            entity = this.badErrorHandling("Aucun pays avec cette ID n'a été trouvé.");
+        }
+        return new ResponseEntity<>(entity, status);
     }
 
-    public Country getCountryByName(String pName) {
+    public ResponseEntity<Country> getCountryByName(String pName) {
         Optional<Country> country = this.repository.findByName(pName);
-        return country.isPresent() ? country.get() : this.badErrorHandling("Aucun pays avec ce nom n'a été trouvé.");
+        Country entity = null;
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        if(country.isPresent()) {
+            entity = country.get();
+            status = HttpStatus.OK;
+        } else {
+            entity = this.badErrorHandling("Aucun pays avec ce nom n'a été trouvé.");
+        }
+        return new ResponseEntity<>(entity, status);
     }
 
-    public List<Country> getAll() {
-        return this.repository.findAll();
+    public ResponseEntity<List<Country>> getAll() {
+        List<Country> countries = this.repository.findAll();
+        HttpStatus status = HttpStatus.NOT_FOUND;
+        if(countries.size() > 0) {
+            status = HttpStatus.OK;
+        } else {
+            countries.add(
+                    this.badErrorHandling("Aucun pays avec ce code n'a été trouvé.")
+            );
+        }
+        return new ResponseEntity<>(countries, status);
     }
 
     /**
-     * Crée l'entité Country si cette dernière n'existe pas.
+     * Crée l'entité Country si cette dernière n'existe pas. Used by POST method
      * */
-    public Country createCountry(Country country) {
+    public ResponseEntity<Country> createCountry(Country country) {
 
         Optional<Country> countryExist = this.repository.findByName(country.getName());
 
@@ -48,30 +83,50 @@ public class CountryService {
         }
 
         if(countryExist.isPresent()) {
-            return this.badErrorHandling("Un pays portant ce nom existe déjà.");
+            country = this.badErrorHandling("Le pays existe déjà, modifiez-le depuis la liste.");
+            return new ResponseEntity<>(country, HttpStatus.CONFLICT);
         }
 
-        return this.setCountry(country);
+        return new ResponseEntity<>(this.persistCountry(country), HttpStatus.CREATED);
+    }
+
+    private Country persistCountry(Country country) {
+        if(!this.countryValidation(country)) {
+            country = this.badErrorHandling("Format invalide, vérifiez les données envoyé.");
+        }
+        try {
+            country = this.repository.save(country);
+            return country;
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return this.badErrorHandling("Erreur lors de la sauvegarde des données, vérifiez les données envoyé.");
+        }
     }
 
     /**
-     * Sauvegarde l'entité Country si le format est correspond à ce qui est attendu.
+     * Sauvegarde l'entité Country si le format est correspond à ce qui est attendu. Used by POST and PUT method
      * */
-    public Country setCountry(Country country) {
-        if(!this.countryValidation(country)) {
-            return this.badErrorHandling("Format invalide, vérifiez les données envoyé.");
-        }
+    public ResponseEntity<Country> setCountry(Long id) {
+        Optional<Country> countryExist = this.repository.findById(id);
+        Country country = countryExist.isPresent() ? countryExist.get() : null;
 
-        return this.repository.save(country);
+        return new ResponseEntity<>(this.persistCountry(country), HttpStatus.OK);
     }
 
     public void delete(Country country) {
         this.repository.delete(country);
     }
 
-    public Long delete(Long id) {
-        this.repository.deleteById(id);
-        return id;
+    public ResponseEntity<Long> delete(Long id) {
+        HttpStatus status = HttpStatus.OK;
+
+        try {
+            this.repository.deleteById(id);
+        } catch (Exception e) {
+            status = HttpStatus.NOT_FOUND;
+        }
+
+        return new ResponseEntity<>(id, status);
     }
 
     /**

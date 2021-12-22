@@ -3,7 +3,6 @@ package com.simplon.restonsbrief.controller;
 import com.simplon.restonsbrief.model.entity.Country;
 import com.simplon.restonsbrief.service.CountryService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -21,43 +20,36 @@ public class CountryController {
 
     @GetMapping("/countries")
     public ResponseEntity<List<Country>> getAllCountries() {
-        return new ResponseEntity<>(this.service.getAll(), HttpStatus.OK);
+        return this.service.getAll();
     }
 
     @GetMapping("/country/{id}")
     public ResponseEntity<Country> getCountryById(@PathVariable Long id) {
-        return new ResponseEntity<>(this.service.getCountry(id), HttpStatus.OK);
+        return this.service.getCountry(id);
     }
 
     @GetMapping("/country/code/{countryCode}")
     public ResponseEntity<Country> getCountry(@PathVariable String countryCode) {
-        return new ResponseEntity<>(this.service.getCountry(countryCode), HttpStatus.OK);
+        return this.service.getCountry(countryCode);
     }
 
     @GetMapping("/country/name/{countryName}")
     public ResponseEntity<Country> getCountryByName(@PathVariable String countryName) {
-        return new ResponseEntity<>(this.service.getCountryByName(countryName), HttpStatus.OK);
+        return this.service.getCountryByName(countryName);
     }
 
     @PutMapping("/country/{id}")
     public ResponseEntity<Country> updateCountry(@PathVariable Long id, @RequestBody Country pCountry) {
-        Country country = this.service.getCountry(id);
-        if(pCountry.getName() != null) {
-            country.setName(pCountry.getName());
-        }
-        if(pCountry.getCode() != null) {
-            country.setCode(pCountry.getCode());
-        }
-        return new ResponseEntity<>(this.service.setCountry(country), HttpStatus.OK);
+        return this.service.setCountry(id);
     }
 
     @PostMapping("/country")
     public ResponseEntity<Country> createCountry(@RequestBody Country country) {
-        return new ResponseEntity<>(this.service.createCountry(country), HttpStatus.CREATED);
+        return this.service.createCountry(country);
     }
 
     @DeleteMapping("/country/{id}")
     public ResponseEntity<Long> deleteCountry(@PathVariable Long id) {
-        return new ResponseEntity<>(this.service.delete(id), HttpStatus.OK);
+        return this.service.delete(id);
     }
 }
