@@ -22,39 +22,27 @@ public class CountryService {
 
     public ResponseEntity<Country> getCountry(String pCode) {
         Optional<Country> country = this.repository.findByCode(pCode);
-        Country entity = null;
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        if(country.isPresent()) {
-            entity = country.get();
-            status = HttpStatus.OK;
-        } else {
-            entity = this.badErrorHandling("Aucun pays avec ce code n'a été trouvé.");
-        }
-        return new ResponseEntity<>(entity, status);
+        return this.getCountry(country);
     }
 
     public ResponseEntity<Country> getCountry(Long id) {
         Optional<Country> country = this.repository.findById(id);
-        Country entity = null;
-        HttpStatus status = HttpStatus.NOT_FOUND;
-        if(country.isPresent()) {
-            entity = country.get();
-            status = HttpStatus.OK;
-        } else {
-            entity = this.badErrorHandling("Aucun pays avec cette ID n'a été trouvé.");
-        }
-        return new ResponseEntity<>(entity, status);
+        return this.getCountry(country);
     }
 
     public ResponseEntity<Country> getCountryByName(String pName) {
         Optional<Country> country = this.repository.findByName(pName);
+        return this.getCountry(country);
+    }
+
+    private ResponseEntity<Country> getCountry(Optional<Country> pCountry) {
         Country entity = null;
         HttpStatus status = HttpStatus.NOT_FOUND;
-        if(country.isPresent()) {
-            entity = country.get();
+        if(pCountry.isPresent()) {
+            entity = pCountry.get();
             status = HttpStatus.OK;
         } else {
-            entity = this.badErrorHandling("Aucun pays avec ce nom n'a été trouvé.");
+            entity = this.badErrorHandling(CountryErrorMessage.COUNTRY_NOT_FIND);
         }
         return new ResponseEntity<>(entity, status);
     }
@@ -66,7 +54,7 @@ public class CountryService {
             status = HttpStatus.OK;
         } else {
             countries.add(
-                    this.badErrorHandling("Aucun pays avec ce code n'a été trouvé.")
+                    this.badErrorHandling(CountryErrorMessage.COUNTRY_NOT_FIND)
             );
         }
         return new ResponseEntity<>(countries, status);
@@ -84,7 +72,7 @@ public class CountryService {
         }
 
         if(countryExist.isPresent()) {
-            country = this.badErrorHandling("Le pays existe déjà, modifiez-le depuis la liste.");
+            country = this.badErrorHandling(CountryErrorMessage.ALREADY_EXIST);
             return new ResponseEntity<>(country, HttpStatus.CONFLICT);
         }
 
@@ -93,14 +81,14 @@ public class CountryService {
 
     private Country persistCountry(Country country) {
         if(!this.countryValidation(country)) {
-            country = this.badErrorHandling("Format invalide, vérifiez les données envoyé.");
+            country = this.badErrorHandling(CountryErrorMessage.INVALID_FORMAT);
         }
         try {
             country = this.repository.save(country);
             return country;
         } catch (Exception e) {
             System.out.println(e.getMessage());
-            return this.badErrorHandling("Erreur lors de la sauvegarde des données, vérifiez les données envoyé.");
+            return this.badErrorHandling(CountryErrorMessage.SAVE_ERROR);
         }
     }
 
@@ -117,7 +105,7 @@ public class CountryService {
             if(isSame || !countryExist.isPresent()) {
                 country.setName(pCountry.getName());
             } else {
-                country = this.badErrorHandling("Un pays portant ce nom existe déjà.");
+                country = this.badErrorHandling(CountryErrorMessage.NAME_EXIST);
                 return new ResponseEntity<>(country, HttpStatus.NOT_FOUND);
             }
         }
@@ -128,7 +116,7 @@ public class CountryService {
             if(isSame || !countryExist.isPresent()) {
                 country.setCode(pCountry.getCode());
             }else {
-                country = this.badErrorHandling("Un pays portant ce code existe déjà.");
+                country = this.badErrorHandling(CountryErrorMessage.CODE_EXIST);
                 return new ResponseEntity<>(country, HttpStatus.NOT_FOUND);
             }
         }
