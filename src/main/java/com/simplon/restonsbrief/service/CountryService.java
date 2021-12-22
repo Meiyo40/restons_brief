@@ -2,6 +2,7 @@ package com.simplon.restonsbrief.service;
 
 import com.simplon.restonsbrief.model.entity.Country;
 import com.simplon.restonsbrief.model.repository.CountryRepository;
+import org.apache.tomcat.util.json.JSONParser;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -106,9 +107,31 @@ public class CountryService {
     /**
      * Sauvegarde l'entité Country si le format est correspond à ce qui est attendu. Used by POST and PUT method
      * */
-    public ResponseEntity<Country> setCountry(Long id) {
+    public ResponseEntity<Country> setCountry(Long id, Country pCountry) {
         Optional<Country> countryExist = this.repository.findById(id);
         Country country = countryExist.isPresent() ? countryExist.get() : null;
+
+        if(pCountry.getName() != null && !pCountry.getName().equals(country.getName())) {
+            countryExist = this.repository.findByName(pCountry.getName());
+            boolean isSame = countryExist.isPresent() && countryExist.get().getId().equals(country.getId());
+            if(isSame || !countryExist.isPresent()) {
+                country.setName(pCountry.getName());
+            } else {
+                country = this.badErrorHandling("Un pays portant ce nom existe déjà.");
+                return new ResponseEntity<>(country, HttpStatus.NOT_FOUND);
+            }
+        }
+
+        if(pCountry.getCode() != null && !pCountry.getCode().equals(country.getCode())) {
+            countryExist = this.repository.findByCode(pCountry.getCode());
+            boolean isSame = countryExist.isPresent() && countryExist.get().getId().equals(country.getId());
+            if(isSame || !countryExist.isPresent()) {
+                country.setCode(pCountry.getCode());
+            }else {
+                country = this.badErrorHandling("Un pays portant ce code existe déjà.");
+                return new ResponseEntity<>(country, HttpStatus.NOT_FOUND);
+            }
+        }
 
         return new ResponseEntity<>(this.persistCountry(country), HttpStatus.OK);
     }

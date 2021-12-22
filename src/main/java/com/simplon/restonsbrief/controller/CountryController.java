@@ -28,19 +28,9 @@ public class CountryController {
         return this.service.getCountry(id);
     }
 
-    @GetMapping("/country/code/{countryCode}")
-    public ResponseEntity<Country> getCountry(@PathVariable String countryCode) {
-        return this.service.getCountry(countryCode);
-    }
-
-    @GetMapping("/country/name/{countryName}")
-    public ResponseEntity<Country> getCountryByName(@PathVariable String countryName) {
-        return this.service.getCountryByName(countryName);
-    }
-
     @PutMapping("/country/{id}")
     public ResponseEntity<Country> updateCountry(@PathVariable Long id, @RequestBody Country pCountry) {
-        return this.service.setCountry(id);
+        return this.service.setCountry(id, pCountry);
     }
 
     @PostMapping("/country")
@@ -51,5 +41,15 @@ public class CountryController {
     @DeleteMapping("/country/{id}")
     public ResponseEntity<Long> deleteCountry(@PathVariable Long id) {
         return this.service.delete(id);
+    }
+
+    @GetMapping("/country/code/{countryCode}")
+    public ResponseEntity<Country> getCountry(@PathVariable String countryCode) {
+        return this.service.getCountry(countryCode);
+    }
+
+    @GetMapping("/country/name/{countryName}")
+    public ResponseEntity<Country> getCountryByName(@PathVariable String countryName) {
+        return this.service.getCountryByName(countryName);
     }
 }
