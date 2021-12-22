@@ -6,6 +6,8 @@ $(document).ready( function() {
     let deleteForm = document.getElementById("deleteForm");
     let countriesList = document.getElementById("countriesList");
 
+    setDataTable();
+
     createBtn.addEventListener("click", (e) => {
         if(formData.style.display === "block") {
             formData.style.display = "none";
@@ -72,8 +74,16 @@ $(document).ready( function() {
                         let code = document.createElement("td");
                         let action = document.createElement("td");
 
+                        let img = document.createElement("img");
+                        img.src = "https://flagcdn.com/16x12/" + el.code.toLowerCase() + ".png";
+                        img.alt = "Flag from " + el.name;
+                        let countryName = document.createElement("span");
+                        countryName.innerText = el.name;
+
                         id.innerText = el.id;
-                        name.innerText = el.name;
+                        id.className = "displayNone";
+                        name.appendChild(img);
+                        name.appendChild(countryName);
                         name.id = "name-" + el.id;
                         code.innerText = el.code;
                         code.id = "code-" + el.id;
@@ -155,10 +165,7 @@ $(document).ready( function() {
                     success: (data) => {
                         if(data.name !== "ERROR") {
                             document.getElementById("confirm-" + countryId).remove();
-                            nName.remove();
-                            nCode.remove();
-                            name.innerText = data.name;
-                            code.innerText = data.code;
+                            setDataTable();
                         } else {
                             alert("Erreur: " + data.code);
                         }
