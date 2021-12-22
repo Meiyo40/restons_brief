@@ -1,21 +1,7 @@
 $(document).ready( function() {
-    let createBtn = document.getElementById("createButton");
     let createSubmit = document.getElementById("createSubmit");
-    let listBtn = document.getElementById("listButton");
-    let formData = document.getElementById("DataForm");
-    let deleteForm = document.getElementById("deleteForm");
-    let countriesList = document.getElementById("countriesList");
 
     setDataTable();
-
-    createBtn.addEventListener("click", (e) => {
-        if(formData.style.display === "block") {
-            formData.style.display = "none";
-        } else {
-            deleteForm.style.display = "none";
-            formData.style.display = "block";
-        }
-    });
 
     createSubmit.addEventListener("click", (e) =>{
         e.preventDefault();
@@ -44,15 +30,6 @@ $(document).ready( function() {
                     console.log("Error while created new country");
                 }
             })
-        }
-    });
-
-    listBtn.addEventListener("click", (e) => {
-        if(countriesList.style.display === "block") {
-            countriesList.style.display = "none";
-        } else {
-            countriesList.style.display = "block";
-           setDataTable();
         }
     });
 

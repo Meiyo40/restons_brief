@@ -18,28 +18,6 @@
 <div id="container">
     <h1>RESTons API</h1>
 
-    <div class="center">
-        <button id="createButton">Create Country</button>
-        <button id="listButton">List Countries</button>
-    </div>
-
-    <div class="center" id="countryForm">
-        <div id="DataForm">
-            <span id="actionTitle"></span>
-            <label for="name">Enter country name</label>
-            <input type="text" required id="name" name="name" placeholder="Country name">
-            <label for="code">Enter Country Code</label>
-            <input type="text" id="code" required name="code" placeholder="Country Code">
-            <input type="submit" id="createSubmit" value="Set your country">
-        </div>
-    </div>
-
-    <div id="deleteForm">
-        <h4>Delete</h4>
-        <input type="text" id="deleteInput" placeholder="ID to delete">
-        <input type="submit" id="deleteSubmit" value="Delete">
-    </div>
-
     <table id="countriesList">
         <thead>
             <tr>
@@ -52,6 +30,18 @@
                 <td>Nom</td>
                 <td>Code</td>
                 <td>Action</td>
+            </tr>
+            <tr>
+                <td class="displayNone"></td>
+                <td>
+                    <input type="text" required id="name" name="name" placeholder="Pays">
+                </td>
+                <td>
+                    <input type="text" id="code" required name="code" placeholder="Code">
+                </td>
+                <td>
+                    <input type="submit" id="createSubmit" value="Ajouter pays">
+                </td>
             </tr>
         </thead>
         <tbody id="listBody">
