@@ -1,4 +1,4 @@
-![alt](https://i.ibb.co/c2HpvRK/front.jpg)
+![Alt Text](https://i.ibb.co/c2HpvRK/front.jpg)
 
 ### Installation
 Le serveur tourne de base sur le port 22000. \
