@@ -1,5 +1,3 @@
-![Alt Text](https://i.ibb.co/c2HpvRK/front.jpg)
-
 ### Installation
 Le serveur tourne de base sur le port 22000. \
 Identifiant database non root, a spécifier pour installer dans application.properties en remplaçant SpringDatabase ligne 2 & 3
