@@ -1,0 +1,1 @@
+java -jar ./target/restonsbrief-0.1.jar

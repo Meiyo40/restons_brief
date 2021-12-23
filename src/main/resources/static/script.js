@@ -54,6 +54,7 @@ $(document).ready( function() {
                         let img = document.createElement("img");
                         img.src = "https://flagcdn.com/16x12/" + el.code.toLowerCase() + ".png";
                         img.alt = "Flag from " + el.name;
+                        
                         let countryName = document.createElement("span");
                         countryName.innerText = el.name;
 
